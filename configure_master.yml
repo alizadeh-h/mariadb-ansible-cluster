@@ -25,7 +25,7 @@
 
     - name: Create replication user
       mysql_user:
-        name: replica
+        name: YOURREPLICANAME
         host: '%'
         password: "1234"
         priv: "*.*:REPLICATION SLAVE"
