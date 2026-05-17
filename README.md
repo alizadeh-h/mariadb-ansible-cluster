@@ -18,6 +18,39 @@ It also includes the configuration of two proxy layers, MaxScale and ProxySQL, t
 
 ## Project Structure
 
+* **first of all you should add your ansile server publickey in target servers
+* **for example:
+```
+ssh-copy-id yourname@yourip
+ssh-copy-id yourname@yourip
+ssh-copy-id yourname@yourip
+ssh-copy-id yourname@yourip
+```
+* **or
+*  1. create: ssh-keygen
+* you can creat this file: vim setup_ssh_keys.yml
+```
+---
+- name: Set up SSH keys on all servers
+  hosts: mariadb_nodes
+  gather_facts: no
+  become: false
+
+  vars:
+    local_public_key_path: "~/.ssh/id_rsa.pub"
+
+  tasks:
+    - name: Ensure SSH key is copied to remote servers
+      ansible.builtin.authorized_key:
+        user: ansible
+        state: present
+        key: "{{ lookup('file', local_public_key_path) }}"
+
+```
+* **and :
+```
+ansible-playbook -i inventory.ini setup_ssh_keys.yml
+```
 ```
 ## Key Files
 
