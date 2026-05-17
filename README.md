@@ -81,6 +81,29 @@ ansible-playbook -i inventory.ini install_mariadb.yml
 ansible-playbook -i inventory.ini configure_master.yml
 ansible-playbook -i inventory.ini configure_replicas.yml
 ```
+MaxScale Config path:
+```
+sudo vim /etc/maxscale.cnf
+```
+```
+[server1]
+type=server
+address=192.168.60.102
+port=3306
+protocol=MariaDBBackend
+
+[server2]
+type=server
+address=192.168.60.103
+port=3306
+protocol=MariaDBBackend
+
+[server3]
+type=server
+address=192.168.60.104
+port=3306
+protocol=MariaDBBackend
+```
 
 Install MaxScale
 ```
