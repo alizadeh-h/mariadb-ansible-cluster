@@ -1,0 +1,28 @@
+- name: Install ProxySQL
+  hosts: proxy
+  become: yes
+
+  tasks:
+
+    - name: Install dependencies
+      apt:
+        name:
+          - wget
+        state: present
+        update_cache: yes
+
+    - name: Download ProxySQL package (Ubuntu 22.04 jammy)
+      get_url:
+        url: https://github.com/sysown/proxysql/releases/download/v2.6.2/proxysql_2.6.2-ubuntu22_amd64.deb
+        dest: /tmp/proxysql.deb
+
+    - name: Install ProxySQL package
+      apt:
+        deb: /tmp/proxysql.deb
+
+    - name: Start ProxySQL service
+      service:
+        name: proxysql
+        state: started
+        enabled: yes
+

@@ -1,0 +1,33 @@
+---
+- name: Configure MariaDB Master
+  hosts: db_master
+  become: yes
+
+  tasks:
+
+    - name: Set server-id for master
+      lineinfile:
+        path: /etc/mysql/mariadb.conf.d/50-server.cnf
+        regexp: '^server-id'
+        line: 'server-id = 1'
+        insertafter: '\\[mysqld\\]'
+
+    - name: Enable binary logging
+      lineinfile:
+        path: /etc/mysql/mariadb.conf.d/50-server.cnf
+        line: 'log_bin = /var/log/mysql/mysql-bin.log'
+        insertafter: '^server-id = 1'
+
+    - name: Restart MariaDB
+      service:
+        name: mariadb
+        state: restarted
+
+    - name: Create replication user
+      mysql_user:
+        name: replica
+        host: '%'
+        password: "1234"
+        priv: "*.*:REPLICATION SLAVE"
+        state: present
+

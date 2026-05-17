@@ -1,0 +1,30 @@
+---
+- name: Configure MariaDB Replicas
+  hosts: db_replicas
+  become: yes
+
+  tasks:
+
+    - name: Set server-id
+      lineinfile:
+        path: /etc/mysql/mariadb.conf.d/50-server.cnf
+        regexp: '^server-id'
+        line: "server-id = {{ inventory_hostname[-1] }}"
+        insertafter: '\[mysqld\]'
+
+    - name: Restart MariaDB
+      service:
+        name: mariadb
+        state: restarted
+
+    - name: Configure replication
+      shell: |
+        mysql -e "
+        STOP SLAVE;
+        CHANGE MASTER TO
+        MASTER_HOST='YOURIP',
+        MASTER_USER='YOURNAME',
+        MASTER_PASSWORD='YOURPASS',
+        MASTER_LOG_FILE='mysql-bin.000001',
+        MASTER_LOG_POS=328;
+        START SLAVE;"
