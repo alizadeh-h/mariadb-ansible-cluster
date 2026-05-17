@@ -112,6 +112,66 @@ sudo systemctl start maxscale
 sudo systemctl enable maxscale
 sudo systemctl status maxscale
 ```
+vim /etc/maxscale.cnf
+```
+####################
+# SERVERS
+####################
+
+[server1]
+type=server
+address=192.168.60.102
+port=3306
+protocol=MariaDBBackend
+
+[server2]
+type=server
+address=192.168.60.103
+port=3306
+protocol=MariaDBBackend
+
+[server3]
+type=server
+address=192.168.60.104
+port=3306
+protocol=MariaDBBackend
+####################
+# MONITOR
+####################
+
+[MariaDB-Monitor]
+type=monitor
+module=mariadbmon
+servers=server1,server2,server3
+user=maxscale
+password=1234
+monitor_interval=2000ms
+
+auto_failover=true
+auto_rejoin=true
+enforce_read_only_slaves=true
+
+####################
+# SERVICE
+####################
+
+[RW-Service]
+type=service
+router=readwritesplit
+servers=server1,server2,server3
+user=maxscale
+password=1234
+
+####################
+# LISTENER
+####################
+
+[RW-Listener]
+type=listener
+service=RW-Service
+protocol=MariaDBClient
+port=4006
+```
 for managing
 ```
 sudo maxctrl list servers
