@@ -84,7 +84,17 @@ ansible-playbook -i inventory.ini configure_replicas.yml
 
 Install MaxScale
 ```
-ansible-playbook -i inventory.ini install_maxscale.yml
+sudo apt install maxscale -y
+sudo systemctl start maxscale
+sudo systemctl enable maxscale
+sudo systemctl status maxscale
+```
+for managing
+```
+sudo maxctrl list servers
+sudo maxctrl list services
+sudo maxctrl list monitors
+
 ```
 
 Install ProxySQL
